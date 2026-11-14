@@ -1,15 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trabajos HCI</title>
+    <style>
+        :root {
+            --maroon: #7b2244;
+            --maroon-dark: #5e1a34;
+            --text: #222;
+            --muted: #6b6b6b;
+            --line: #e3e3e3;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text);
+            background: #fff;
+            line-height: 1.5;
+        }
+
+        /* Cabecera superior */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo {
+            height: 72px;
+            width: auto;
+        }
+        .brand-text {
+            color: var(--maroon);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-left: 1px solid var(--line);
+            padding-left: 1rem;
+        }
+        .user {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        .user strong {
+            display: block;
+            font-weight: 600;
+        }
+        .user span {
+            color: var(--muted);
+        }
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 4px;
+            background: #ddd center/cover no-repeat;
+        }
+        .user-block {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Banda principal */
+        .banner {
+            background: var(--maroon);
+            color: #fff;
+            margin: 1.5rem 2rem 0;
+            padding: 1.5rem 2rem;
+        }
+        .banner h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .banner p {
+            margin: 0.25rem 0 0;
+            opacity: 0.9;
+        }
+
+        /* Lista de trabajos */
+        main {
+            padding: 1.5rem 2rem 3rem;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            border-bottom: 1px solid var(--line);
+        }
+        li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 0.25rem;
+            color: var(--maroon-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        li a::before {
+            content: "";
+            width: 18px;
+            height: 22px;
+            border: 2px solid var(--maroon);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        li a:hover {
+            color: var(--maroon);
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Repositorio de trabajos HCI</h1>
-    <p>Fernando Robledo Villanueva</p>
+    <div class="topbar">
+        <div class="brand">
+            <img class="logo" src="logo.jpg" alt="Logo de la universidad">
+            <div class="brand-text">Asignatura: HCI</div>
+        </div>
+        <div class="user-block">
+            <div class="user">
+                <strong>Fernando Robledo Villanueva</strong>
+                <span>Repositorio de prácticas</span>
+            </div>
+        </div>
+    </div>
 
-    <ul>
-        <li><a href="practica1.html">Práctica 1</a></li>
-    </ul>
+    <div class="banner">
+        <h1>Repositorio de trabajos HCI</h1>
+        <p>Interacción Persona-Ordenador</p>
+    </div>
+
+    <main>
+        <ul>
+            <li><a href="practica1.html">Práctica 1</a></li>
+            <li><a href="practica2.html">Práctica 2</a></li>
+            <li><a href="practica3.html">Práctica 3</a></li>
+            <li><a href="practica4.html">Práctica 4</a></li>
+            <li><a href="practica5.html">Práctica 5</a></li>
+            <li><a href="practica6.html">Práctica 6</a></li>
+            <li><a href="practica7.html">Práctica 7</a></li>
+            <li><a href="practica8.html">Práctica 8</a></li>
+        </ul>
+    </main>
 </body>
 </html>
