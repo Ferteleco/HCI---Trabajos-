@@ -62,24 +62,39 @@ figcaption b { color: #1F1B2E; }
 .mapa span { border: .8pt solid #0B6B4A; border-radius: 3mm; padding: 4pt 8pt; background: #fff; text-align: center; }
 .qr-demo { text-align: center; }
 .mapa i { font-style: normal; color: #0B6B4A; font-weight: 700; }
+
+/* Portada a página completa */
+@page cover { size: A4; margin: 0; }
+.cover { page: cover; width: 210mm; height: 296mm; background: #0C0F0E; color: #F4F1EA; position: relative; break-after: page; overflow: hidden; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.cover .banda-v { position: absolute; left: 0; right: 0; top: 27mm; height: 7mm; background: #35E0A1; }
+.cover .centro { position: absolute; left: 0; right: 0; top: 84mm; text-align: center; padding: 0 22mm; }
+.cover .titulo { font-family: "Anton", Impact, "Arial Narrow", sans-serif; font-size: 78pt; line-height: 1; letter-spacing: .02em; color: #FFFFFF; margin: 0 0 7mm; padding: 0; border: 0; break-before: auto; text-transform: uppercase; }
+.cover .sub { font-size: 17pt; color: #35E0A1; margin: 0 0 20mm; font-weight: 400; }
+.cover .desc { font-size: 12.5pt; line-height: 1.55; color: #D6D9D2; max-width: 130mm; margin: 0 auto; text-align: center; }
+.cover .pie { position: absolute; left: 0; right: 0; bottom: 30mm; text-align: center; font-size: 10.5pt; line-height: 1.8; color: #C9CDC5; padding: 0 22mm; }
+.cover .pie .autor { font-size: 13pt; font-weight: 700; color: #FFFFFF; margin: 7mm 0 0; }
+.cover .pie .rep { font-size: 9pt; color: #35E0A1; word-break: break-all; margin-top: 1mm; }
+.cover p { text-align: center; margin: 0; }
 </style>
 </head>
 <body>
 
 <!-- ============ PORTADA ============ -->
-<section class="portada">
-  <div class="banda">
-    <p class="tipo">Trabajo académico</p>
-    <p class="titulo">Diseño de una interfaz para una aplicación de gestión de eventos culturales</p>
-    <p class="sub">«Telón»: consultar, filtrar, guardar y reservar eventos culturales cercanos, con viaje en Metro incluido, bajo criterios de usabilidad y accesibilidad WCAG&nbsp;2.1.</p>
+<section class="cover">
+  <div class="banda-v"></div>
+  <div class="centro">
+    <h1 class="titulo">Telón</h1>
+    <p class="sub">Memoria del proyecto</p>
+    <p class="desc">Diseño de una interfaz web y móvil para consultar, filtrar, guardar y reservar eventos culturales cercanos, con viaje en Metro incluido</p>
   </div>
-  <dl>
-    <dt>Estudiante</dt><dd>Fernando Robledo Villanueva</dd>
-    <dt>Asignatura</dt><dd>HCI: Desarrollo web y móvil</dd>
-    <dt>Fecha</dt><dd>Noviembre de 2026</dd>
-    <dt>Repositorio</dt><dd>https://github.com/Ferteleco/HCI---Trabajos-/tree/main/telon-hci-eventos-culturales</dd>
-    <dt>Entregables</dt><dd>Este documento y el prototipo (HTML, CSS y JavaScript)</dd>
-  </dl>
+  <div class="pie">
+    <p>Prototipo funcional en HTML · CSS · JavaScript</p>
+    <p>Dirección visual «Cartelera» · Mobile-first · WCAG 2.1 AA</p>
+    <p class="autor">Fernando Robledo Villanueva</p>
+    <p>HCI: Desarrollo web y móvil</p>
+    <p>Noviembre de 2026</p>
+    <p class="rep">github.com/Ferteleco/HCI---Trabajos-/tree/main/telon-hci-eventos-culturales</p>
+  </div>
 </section>
 
 <!-- ============ ÍNDICE ============ -->
