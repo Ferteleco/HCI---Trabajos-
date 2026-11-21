@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Telón · Diseño de una interfaz para una aplicación de gestión de eventos culturales</title>
+<style>
+@page { size: A4; margin: 20mm 18mm 20mm 18mm; }
+* { box-sizing: border-box; }
+html { font-size: 10.5pt; }
+body { margin: 0; font-family: "Segoe UI", system-ui, Arial, sans-serif; color: #1F1B2E; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1, h2, h3 { font-family: "Palatino Linotype", Palatino, Georgia, serif; line-height: 1.2; break-after: avoid; }
+h1 { font-size: 20pt; margin: 0 0 10pt; padding-bottom: 6pt; border-bottom: 2pt solid #0B6B4A; break-before: page; }
+h2 { font-size: 13.5pt; margin: 16pt 0 6pt; color: #0B6B4A; }
+h3 { font-size: 11.5pt; margin: 12pt 0 4pt; }
+p { margin: 0 0 7pt; text-align: left; orphans: 3; widows: 3; }
+ul, ol { margin: 0 0 8pt; padding-left: 16pt; }
+li { margin-bottom: 3pt; }
+a { color: #0B6B4A; }
+code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: #F1EDE6; padding: 0 2pt; border-radius: 2pt; }
+pre { font-family: Consolas, "Courier New", monospace; font-size: 8.3pt; line-height: 1.4; background: #F6F3EE; border: .5pt solid #D9D3C7; border-radius: 4pt; padding: 7pt 9pt; margin: 0 0 8pt; white-space: pre-wrap; break-inside: avoid; }
+table { width: 100%; border-collapse: collapse; margin: 4pt 0 10pt; font-size: 9.3pt; break-inside: avoid; }
+caption { caption-side: top; text-align: left; font-weight: 700; padding-bottom: 4pt; font-size: 9.3pt; }
+th, td { border: .5pt solid #BDB6AA; padding: 4pt 6pt; vertical-align: top; text-align: left; }
+th { background: #DDF5EA; }
+td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.muestra { display: inline-block; width: 9pt; height: 9pt; border: .5pt solid #7A7488; border-radius: 2pt; vertical-align: -1pt; margin-right: 4pt; }
+
+/* Portada */
+.portada { height: 255mm; display: flex; flex-direction: column; justify-content: space-between; }
+.portada .banda { background: #0C0F0E; color: #F4F1EA; padding: 22mm 14mm 16mm; border-radius: 4mm;
+  }
+.portada .tipo { text-transform: uppercase; letter-spacing: .12em; font-size: 9.5pt; font-weight: 700; margin-bottom: 8mm; }
+@font-face { font-family: "Anton"; src: url("fuentes/anton-latin-400.woff2") format("woff2"); }
+.portada .titulo { font-family: "Anton", Impact, sans-serif; text-transform: uppercase; font-size: 34pt; line-height: 1.02; font-weight: 400; color: #35E0A1; margin: 0 0 6mm; border: 0; padding: 0; break-before: auto; }
+.portada .sub { font-size: 13pt; max-width: 120mm; }
+.portada dl { display: grid; grid-template-columns: 38mm 1fr; gap: 3pt 0; margin: 0; font-size: 11pt; }
+.portada dt { font-weight: 700; }
+.portada dd { margin: 0; }
+.rellenar { background: #FFF3B0; padding: 0 3pt; }
+
+/* Índice */
+.indice ol { list-style: none; padding: 0; }
+.indice li { display: flex; gap: 6pt; padding: 3pt 0; border-bottom: .5pt dotted #BDB6AA; }
+.indice .n { width: 16pt; font-weight: 700; color: #0B6B4A; }
+
+/* Figuras */
+figure { margin: 8pt 0 12pt; break-inside: avoid; }
+figcaption { font-size: 9pt; color: #5A5568; margin-top: 5pt; }
+figcaption b { color: #1F1B2E; }
+.moviles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7mm; }
+.moviles.cuatro { grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+.moviles.cuatro .marco { border-width: .9mm; border-radius: 3.5mm; }
+.movil { margin: 0; }
+.movil .marco { border: 1.2mm solid #1F1B2E; border-radius: 5mm; overflow: hidden; aspect-ratio: 390 / 844; background: #fff; }
+.movil .marco img { display: block; width: 100%; }
+.escritorio { border: .5pt solid #7A7488; border-radius: 2mm; overflow: hidden; }
+.escritorio img { display: block; width: 100%; }
+.dos { display: grid; grid-template-columns: 1.67fr 1fr; gap: 6mm; align-items: start; }
+.nota { background: #F6F3EE; border-left: 3pt solid #0B6B4A; padding: 6pt 9pt; margin: 6pt 0 10pt; break-inside: avoid; }
+.nota p:last-child { margin-bottom: 0; }
+.mapa { display: flex; align-items: center; justify-content: center; gap: 3mm; flex-wrap: wrap; margin: 8pt 0; font-size: 9.3pt; }
+.mapa span { border: .8pt solid #0B6B4A; border-radius: 3mm; padding: 4pt 8pt; background: #fff; text-align: center; }
+.qr-demo { text-align: center; }
+.mapa i { font-style: normal; color: #0B6B4A; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ============ PORTADA ============ -->
+<section class="portada">
+  <div class="banda">
+    <p class="tipo">Trabajo académico</p>
+    <p class="titulo">Diseño de una interfaz para una aplicación de gestión de eventos culturales</p>
+    <p class="sub">«Telón»: consultar, filtrar, guardar y reservar eventos culturales cercanos, con viaje en Metro incluido, bajo criterios de usabilidad y accesibilidad WCAG&nbsp;2.1.</p>
+  </div>
+  <dl>
+    <dt>Estudiante</dt><dd>Fernando Robledo Villanueva</dd>
+    <dt>Asignatura</dt><dd>HCI: Desarrollo web y móvil</dd>
+    <dt>Fecha</dt><dd>Noviembre de 2026</dd>
+    <dt>Repositorio</dt><dd>https://github.com/Ferteleco/HCI---Trabajos-/tree/main/telon-hci-eventos-culturales</dd>
+    <dt>Entregables</dt><dd>Este documento y el prototipo (HTML, CSS y JavaScript)</dd>
+  </dl>
+</section>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="indice">
+  <h1>Índice</h1>
+  <ol>
+    <li><span class="n">1</span>Introducción y objetivos</li>
+    <li><span class="n">2</span>Principios de usabilidad y accesibilidad aplicados</li>
+    <li><span class="n">3</span>Prototipo interactivo</li>
+    <li><span class="n">4</span>Justificación de las decisiones de diseño</li>
+    <li><span class="n">5</span>Documentación del proceso</li>
+    <li><span class="n">6</span>Conclusiones y autoevaluación</li>
+    <li><span class="n">A</span>Anexo: código del prototipo funcional</li>
+    <li><span class="n">B</span>Referencias</li>
+  </ol>
+</section>
+
+<!-- ============ 1 ============ -->
+<section>
+  <h1>1. Introducción y objetivos</h1>
+
+  <h2>1.1 Objetivo de la interfaz</h2>
+  <p>Telón es una aplicación para descubrir la oferta cultural cercana —conciertos, teatro, exposiciones, cine, danza y literatura— y decidir rápido a qué ir. La interfaz se ha diseñado para resolver cinco tareas: las cuatro del enunciado y una mejora propia, el viaje en Metro:</p>
+  <ol>
+    <li><b>Consultar</b> los próximos eventos cercanos, ordenados por fecha.</li>
+    <li><b>Filtrar</b> por categoría, fecha y ubicación (además de precio y accesibilidad del recinto).</li>
+    <li><b>Guardar</b> eventos en una lista personal para decidir más tarde.</li>
+    <li><b>Reservar entradas o inscribirse</b> (parte opcional del enunciado, incluida en el prototipo).</li>
+    <li><b>Llegar al evento en Metro</b> (mejora propia): al reservar se puede añadir un viaje en Metro de Madrid con billete QR, con una oferta de 1,50&nbsp;€ por persona para toda la red.</li>
+  </ol>
+  <p>El criterio que ha guiado todas las decisiones es que una persona pueda responder a «¿qué hay, cuándo, dónde y cuánto cuesta?» sin abrir el detalle del evento, y que pueda hacerlo también con teclado o con un lector de pantalla.</p>
+
+  <h2>1.2 Público objetivo</h2>
+  <p>Personas adultas que viven en una ciudad o la visitan y consumen cultura de forma ocasional o habitual. No se presupone experiencia técnica. Para concretar las decisiones se han usado dos perfiles:</p>
+  <table>
+    <tr><th style="width:22%">Perfil</th><th>Contexto y necesidades</th><th style="width:34%">Consecuencia en el diseño</th></tr>
+    <tr><td><b>Nerea, 27 años</b><br>Planifica desde el móvil</td><td>Busca planes para el fin de semana en trayectos cortos, con una sola mano. Compara varios eventos y decide días después.</td><td>Diseño mobile-first con estética de cartelera, navegación inferior al alcance del pulgar, atajos de fecha («Este fin de semana»), lista personal.</td></tr>
+    <tr><td><b>Joaquín, 68 años</b><br>Usa tableta y portátil</td><td>Tiene presbicia y acude con una acompañante en silla de ruedas. Desconfía de los iconos sin texto y de los formularios largos.</td><td>Texto de 16&nbsp;px como mínimo, contraste alto, iconos siempre acompañados de texto, filtro «Accesible en silla de ruedas», áreas táctiles de 44&nbsp;px o más.</td></tr>
+  </table>
+
+  <h2>1.3 Dispositivos previstos</h2>
+  <p>Se ha diseñado una <b>aplicación web adaptable (responsive)</b> que funciona en móvil, tableta y escritorio con un único código. El móvil es el dispositivo principal porque la consulta de planes suele hacerse fuera de casa; el escritorio aprovecha el ancho para mostrar los filtros de forma permanente junto al listado.</p>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <h1>2. Principios de usabilidad y accesibilidad aplicados</h1>
+
+  <h2>2.1 Usabilidad</h2>
+  <table>
+    <tr><th style="width:24%">Principio</th><th>Cómo se aplica en Telón</th></tr>
+    <tr><td>Coherencia visual</td><td>Un único sistema de componentes: la misma tarjeta de evento en el listado, el mismo marcador para guardar en todas las pantallas, botones primarios siempre en verde esmeralda y secundarios con borde. Cada categoría mantiene su color de cartel y su icono en listado, detalle y lista personal.</td></tr>
+    <tr><td>Jerarquía</td><td>Un solo <code>h1</code> por pantalla; títulos en una tipografía de cartel condensada y en mayúsculas, y datos en palo seco. En cada cartel el día del mes es el elemento más grande, seguido del título, el lugar y el precio.</td></tr>
+    <tr><td>Claridad</td><td>Etiquetas con verbos concretos («Reservar entradas», «Quitar de la lista», «Ver 12 eventos»). Las fechas próximas se expresan como «Hoy» o «Mañana». El precio «Gratis» se destaca con una etiqueta propia.</td></tr>
+    <tr><td>Espacio en blanco</td><td>Retícula de 16&nbsp;px entre tarjetas y márgenes laterales de 16&nbsp;px en móvil y 24&nbsp;px en escritorio. Los bloques se separan con espacio y con un cambio de tono del fondo, sin líneas ni sombras.</td></tr>
+    <tr><td>Navegación clara y consistente</td><td>Tres destinos fijos —Inicio, Buscar, Mi lista— siempre visibles: barra inferior en móvil y cabecera en escritorio. El destino activo se indica con un bloque de color relleno y el atributo <code>aria-current</code>. Las pantallas secundarias tienen un enlace «Volver al listado».</td></tr>
+    <tr><td>Retroalimentación</td><td>Cada acción produce una respuesta inmediata: el marcador cambia de estado, el número de resultados se actualiza al tocar un filtro y un aviso breve confirma «Guardado en tu lista» o «Reserva confirmada».</td></tr>
+    <tr><td>Prevención de errores</td><td>El contador de entradas limita el valor entre 1 y 6; si un filtro deja el listado vacío se explica el motivo y se ofrece «Borrar filtros»; la reserva pide confirmación en un diálogo con el total a la vista.</td></tr>
+  </table>
+
+  <h2>2.2 Accesibilidad (WCAG 2.1, nivel AA)</h2>
+  <table>
+    <tr><th style="width:27%">Criterio WCAG 2.1</th><th>Aplicación en el prototipo</th></tr>
+    <tr><td>1.1.1 Contenido no textual</td><td>Los iconos y las fotografías de los carteles son decorativos (<code>aria-hidden</code> o <code>alt=""</code>), porque junto a cada una está el título del evento; los botones de solo icono tienen nombre accesible («Guardar «Noches de jazz…» en mi lista»). El código QR del billete de Metro se expone como imagen con descripción y con su código de respaldo en texto.</td></tr>
+    <tr><td>1.3.1 Información y relaciones</td><td>HTML semántico: <code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, listas, <code>fieldset</code>/<code>legend</code> en los grupos de filtros, <code>dl</code> para los datos del evento y <code>time</code> para las fechas.</td></tr>
+    <tr><td>1.4.1 Uso del color</td><td>El color nunca es el único indicador: la categoría se escribe con texto, el filtro activo añade una marca «✓» y el estado guardado cambia el relleno del icono y el texto del botón.</td></tr>
+    <tr><td>1.4.3 Contraste (mínimo)</td><td>Todo el texto sobre fondos planos supera 4,5:1 y casi todo supera 7:1, también sobre los carteles de color (tabla de la sección 4.3). Sobre las fotografías el texto blanco se apoya en un velo oscuro; ese caso no se ha medido numéricamente y queda como pendiente (sección 5.3).</td></tr>
+    <tr><td>1.4.4 y 1.4.10 Cambio de tamaño y reajuste</td><td>Tamaños en <code>rem</code> y maquetación fluida: el contenido se reorganiza en una columna sin desplazamiento horizontal a 320&nbsp;px de ancho.</td></tr>
+    <tr><td>1.4.11 Contraste no textual</td><td>Bordes de campos, casillas y botones con contraste ≥ 3:1 (5,54:1 sobre los paneles). Las casillas y los botones de opción se han dibujado a medida porque los nativos del tema oscuro no llegaban a 3:1.</td></tr>
+    <tr><td>2.1.1 Teclado</td><td>Todas las funciones se realizan con elementos nativos (<code>a</code>, <code>button</code>, <code>input</code>, <code>select</code>, <code>dialog</code>), por lo que funcionan con Tab, Intro, Espacio, flechas y Escape sin código adicional.</td></tr>
+    <tr><td>2.4.1 Evitar bloques</td><td>Enlace «Saltar al contenido principal» como primer elemento enfocable.</td></tr>
+    <tr><td>2.4.2 y 2.4.6 Títulos y etiquetas</td><td>El título de la página cambia en cada pantalla («Mi lista · Telón»); encabezados descriptivos y jerárquicos.</td></tr>
+    <tr><td>2.4.3 Orden del foco</td><td>Al cambiar de pantalla el foco se lleva al <code>h1</code>; al cerrar el diálogo vuelve a la zona de acciones; al quitar un elemento de la lista pasa al encabezado de su sección.</td></tr>
+    <tr><td>2.4.7 Foco visible</td><td>Anillo de dos tonos: contorno blanco de 3&nbsp;px con halo negro. Se distingue sobre el fondo oscuro (19,2:1) y sobre cualquier cartel, sea claro u oscuro.</td></tr>
+    <tr><td>2.5.5 Tamaño del objetivo (AAA)</td><td>Todos los controles miden al menos 44 × 44&nbsp;px; los botones principales, 52&nbsp;px de alto.</td></tr>
+    <tr><td>3.1.1 Idioma</td><td><code>lang="es"</code> en el documento.</td></tr>
+    <tr><td>3.3.2 Etiquetas o instrucciones</td><td>Todos los campos tienen una <code>label</code> visible asociada; el texto de ejemplo (<i>placeholder</i>) solo complementa.</td></tr>
+    <tr><td>4.1.2 Nombre, función, valor</td><td>Botones conmutables con <code>aria-pressed</code>; navegación con <code>aria-current="page"</code>; diálogo nativo con <code>aria-labelledby</code>.</td></tr>
+    <tr><td>4.1.3 Mensajes de estado</td><td>El recuento de resultados y los avisos de confirmación usan <code>role="status"</code>, de modo que el lector de pantalla los anuncia sin mover el foco.</td></tr>
+  </table>
+  <p>Además se respetan dos preferencias del sistema: <code>prefers-reduced-motion</code> (se desactivan todas las animaciones de entrada y los desplazamientos) y el modo de contraste forzado de Windows (los estados activos se refuerzan con el borde, no solo con el fondo).</p>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <h1>3. Prototipo interactivo</h1>
+  <p>En lugar de un mockup estático se ha construido un <b>prototipo funcional en HTML, CSS y JavaScript</b>, sin bibliotecas externas. Así se puede comprobar de verdad lo que un mockup solo simula: el comportamiento adaptable, la navegación por teclado y los mensajes para lectores de pantalla. Para abrirlo basta con hacer doble clic en <code>prototipo/index.html</code>; funciona sin conexión.</p>
+  <div class="nota"><p><b>Enlace al prototipo:</b> https://ferteleco.github.io/HCI---Trabajos-/telon-hci-eventos-culturales/ (código: https://github.com/Ferteleco/HCI---Trabajos-/tree/main/telon-hci-eventos-culturales). Se entrega también como carpeta del prototipo junto a este documento. Los eventos, los recintos y la usuaria «Nerea Ibarra» son datos ficticios de ejemplo.</p></div>
+
+  <h2>3.1 Mapa de navegación</h2>
+  <div class="mapa">
+    <span><b>Inicio</b><br>listado de eventos</span><i>⇄</i>
+    <span><b>Buscar</b><br>filtros</span><i>·</i>
+    <span><b>Detalle</b><br>de un evento</span><i>→</i>
+    <span><b>Reserva</b><br>diálogo</span><i>→</i>
+    <span><b>Mi lista</b><br>guardados y reservas</span>
+  </div>
+  <p>Inicio, Buscar y Mi lista son accesibles desde cualquier pantalla mediante la navegación principal. Al detalle se llega desde cualquier tarjeta o desde la lista personal; la reserva se abre como diálogo sobre el detalle para no perder el contexto.</p>
+
+  <h2>3.2 Pantallas en móvil (390 × 844 px)</h2>
+  <figure>
+    <div class="moviles cuatro">
+      <div class="movil"><div class="marco"><img src="capturas/m-inicio.png" alt="Portada en móvil: titular Cultura cerca de ti, buscador, botón Filtros, categorías y destacado de la semana con fotografía"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-inicio2.png" alt="Listado en móvil: carteles de eventos con fotografía, día en grande, título, lugar y precio"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-filtros.png" alt="Pantalla de filtros en móvil: búsqueda por texto, qué y cuándo"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-filtros2.png" alt="Parte inferior de la pantalla de filtros: dónde, y además, y botón con el número de resultados"></div></div>
+    </div>
+    <figcaption><b>Figura 1.</b> De izquierda a derecha: <b>inicio</b> con titular, buscador, categorías y destacado de la semana; <b>listado de eventos</b> como carteles con fotografía (misma pantalla, al desplazar); y <b>búsqueda y filtros</b>, parte superior e inferior, con los grupos «¿Qué?», «¿Cuándo?», «¿Dónde?» e «Y además» y el botón fijo que indica cuántos resultados quedan.</figcaption>
+  </figure>
+  <figure>
+    <div class="moviles cuatro">
+      <div class="movil"><div class="marco"><img src="capturas/m-detalle.png" alt="Detalle de un evento en móvil: cabecera con fotografía y título, acciones y ficha de datos"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-reserva.png" alt="Diálogo de reserva con contador de entradas, casilla de viaje en Metro marcada, desglose y total de 53 euros"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-qr.png" alt="Billete de Metro con código QR, código de respaldo y aviso de que es un código de ejemplo"></div></div>
+      <div class="movil"><div class="marco"><img src="capturas/m-lista.png" alt="Mi lista en móvil: perfil, reserva con viajes de Metro y eventos guardados"></div></div>
+    </div>
+    <figcaption><b>Figura 2.</b> De izquierda a derecha: <b>detalle de un evento</b>, con la fotografía como cabecera; <b>diálogo de reserva</b> con la opción de añadir un viaje en Metro, el desglose y el total; <b>billete de Metro con código QR</b>; y <b>lista personal</b>, con la reserva (entradas más viajes de Metro) y los eventos guardados en forma de entrada.</figcaption>
+  </figure>
+
+  <h2>3.3 Pantallas en tableta y escritorio</h2>
+  <figure>
+    <div class="escritorio"><img src="capturas/d-inicio.png" alt="Inicio en escritorio: navegación en la cabecera, titular de portada, buscador y destacado con fotografía"></div>
+    <figcaption><b>Figura 3.</b> <b>Inicio en escritorio</b> (1280&nbsp;px). La navegación sube a la cabecera y el titular comparte la primera pantalla con la frase de presentación y el buscador. Más abajo, los filtros pasan a un panel lateral permanente y los carteles se disponen en tres columnas.</figcaption>
+  </figure>
+  <figure>
+    <div class="dos">
+      <div class="escritorio"><img src="capturas/d-detalle.png" alt="Detalle de un evento en escritorio con la descripción a la izquierda y las acciones y la ficha a la derecha"></div>
+      <div class="escritorio"><img src="capturas/t-inicio.png" alt="Inicio en tableta con titular y buscador"></div>
+    </div>
+    <figcaption><b>Figura 4.</b> Izquierda: <b>detalle en escritorio</b>, con la fotografía como cabecera, la descripción a la izquierda y, a la derecha, las acciones y la ficha (incluida la fila «Cómo llegar en Metro»), que permanece visible al desplazar. Derecha: <b>inicio en tableta</b> (768&nbsp;px).</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <h1>4. Justificación de las decisiones de diseño</h1>
+
+  <h2>4.1 Concepto y referencias</h2>
+  <p>La primera versión del prototipo, clara y con tarjetas convencionales, era correcta pero resultaba poco atractiva para un producto cultural. En una segunda iteración se rehízo el aspecto visual a partir de una idea: <b>cada evento es un cartel</b>, y la aplicación es la cartelera pegada en la pared de una sala a oscuras. Se tomaron como guía dos webs reales:</p>
+  <ul>
+    <li><b>La web de un gran musical en cartel en Madrid</b> (wickedelmusical.com): de ella se adopta el planteamiento escénico, con fondo oscuro, un único color de luz reservado a la acción y títulos enormes de cartel.</li>
+    <li><b>La agenda de actividades del Ayuntamiento de Madrid</b> (madrid.es): de ella se adopta la estructura funcional, con los filtros formulados como preguntas («¿De qué tipo?», «¿Cuándo?», «¿Dónde?»), las opciones «solo gratuitas» y «apta para movilidad reducida» y un bloque de eventos destacados.</li>
+  </ul>
+  <p>No se ha copiado ningún elemento gráfico, texto ni imagen de esas webs: solo se han usado como referencia de tono y de organización.</p>
+  <p>En una tercera iteración se añadió <b>fotografía</b> a cada cartel: el color plano de la categoría se mantiene como base y la foto se funde con él mediante un velo, de modo que el listado conserva su coherencia cromática aunque las imágenes sean muy distintas. La fotografía vuelve reconocible cada evento, pero el color, el día en grande y el título siguen siendo lo que ordena la lectura.</p>
+
+  <h2>4.2 Tipografía</h2>
+  <ul>
+    <li><b>Títulos en Anton</b>, una tipografía de palo seco condensada y muy pesada, heredera de la rotulación de los carteles de espectáculos, siempre en mayúsculas. Permite titulares muy grandes que ocupan poco ancho, algo esencial en móvil.</li>
+    <li><b>Texto e interfaz en la tipografía de palo seco del sistema</b> (Segoe UI, San Francisco o Roboto), la más legible en cada plataforma a tamaños pequeños.</li>
+    <li><b>Contraste extremo de escala.</b> Solo hay dos voces: una muy grande (titular de portada de 56 a 132&nbsp;px, día del mes de 80&nbsp;px en cada cartel) y una pequeña (texto de 16 a 18&nbsp;px). Esa diferencia crea la jerarquía sin recurrir a adornos.</li>
+    <li><b>Fuente incluida en el prototipo.</b> Anton se distribuye con licencia libre (SIL Open Font License) y se sirve desde la propia carpeta, sin peticiones a terceros; si no cargara, se usa una condensada del sistema.</li>
+    <li>Todas las medidas están en <code>rem</code> y ningún texto baja de 13&nbsp;px. Las mayúsculas se aplican con CSS, de modo que los lectores de pantalla leen los títulos con normalidad.</li>
+  </ul>
+
+  <h2>4.3 Color</h2>
+  <p>La paleta tiene tres papeles claros. El <b>fondo casi negro</b> representa la sala a oscuras y hace que los carteles destaquen. El <b>verde esmeralda</b> es la «luz de foco»: se reserva a lo interactivo (enlaces, botón principal, destino activo, confirmaciones), de manera que todo lo verde se puede pulsar. Y cada <b>categoría tiene un color plano de cartel</b> —amarillo, rojo, hueso, azul, naranja y verde— que se usa en su cartel, en su filtro activo y en su entrada de la lista, siempre junto al nombre escrito. Las superficies se separan con un escalón de tono, sin sombras. El único degradado es el velo oscuro que se coloca bajo el texto cuando hay una fotografía.</p>
+  <p>Las ratios de contraste se han calculado con la fórmula de luminancia relativa de WCAG 2.1:</p>
+  <table>
+    <tr><th>Uso</th><th>Primer plano</th><th>Fondo</th><th>Ratio</th><th>Mínimo AA</th></tr>
+    <tr><td>Texto principal</td><td><span class="muestra" style="background:#F4F1EA"></span>#F4F1EA</td><td><span class="muestra" style="background:#0C0F0E"></span>#0C0F0E</td><td class="num">17,07:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Texto principal en paneles</td><td><span class="muestra" style="background:#F4F1EA"></span>#F4F1EA</td><td><span class="muestra" style="background:#171C1A"></span>#171C1A</td><td class="num">15,29:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Texto secundario</td><td><span class="muestra" style="background:#B9BDB5"></span>#B9BDB5</td><td><span class="muestra" style="background:#0C0F0E"></span>#0C0F0E</td><td class="num">10,10:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Texto secundario en paneles</td><td><span class="muestra" style="background:#B9BDB5"></span>#B9BDB5</td><td><span class="muestra" style="background:#171C1A"></span>#171C1A</td><td class="num">9,04:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Enlaces y acento</td><td><span class="muestra" style="background:#35E0A1"></span>#35E0A1</td><td><span class="muestra" style="background:#0C0F0E"></span>#0C0F0E</td><td class="num">11,31:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Botón primario y navegación activa</td><td><span class="muestra" style="background:#06140E"></span>#06140E</td><td><span class="muestra" style="background:#35E0A1"></span>#35E0A1</td><td class="num">11,07:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Acción destructiva</td><td><span class="muestra" style="background:#FF9C8F"></span>#FF9C8F</td><td><span class="muestra" style="background:#171C1A"></span>#171C1A</td><td class="num">8,55:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de conciertos</td><td><span class="muestra" style="background:#14110A"></span>#14110A</td><td><span class="muestra" style="background:#F2C230"></span>#F2C230</td><td class="num">11,25:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de teatro</td><td><span class="muestra" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="muestra" style="background:#C8102E"></span>#C8102E</td><td class="num">5,88:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de exposiciones</td><td><span class="muestra" style="background:#14110A"></span>#14110A</td><td><span class="muestra" style="background:#EDE7DA"></span>#EDE7DA</td><td class="num">15,30:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de cine</td><td><span class="muestra" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="muestra" style="background:#2247E6"></span>#2247E6</td><td class="num">6,75:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de danza</td><td><span class="muestra" style="background:#14110A"></span>#14110A</td><td><span class="muestra" style="background:#FF7A3D"></span>#FF7A3D</td><td class="num">7,27:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Cartel de literatura</td><td><span class="muestra" style="background:#06140E"></span>#06140E</td><td><span class="muestra" style="background:#35E0A1"></span>#35E0A1</td><td class="num">11,07:1</td><td class="num">4,5:1</td></tr>
+    <tr><td>Borde de campos y casillas</td><td><span class="muestra" style="background:#8D948C"></span>#8D948C</td><td><span class="muestra" style="background:#171C1A"></span>#171C1A</td><td class="num">5,54:1</td><td class="num">3:1</td></tr>
+    <tr><td>Indicador de foco</td><td><span class="muestra" style="background:#FFFFFF"></span>#FFFFFF</td><td><span class="muestra" style="background:#0C0F0E"></span>#0C0F0E</td><td class="num">19,2:1</td><td class="num">3:1</td></tr>
+  </table>
+  <p>Cuando un cartel lleva fotografía se oculta el icono ampliado de la categoría, porque la imagen ya identifica el evento y el icono ensuciaba la foto.</p>
+
+  <h2>4.4 Disposición de los elementos</h2>
+  <ul>
+    <li><b>Portada.</b> El titular «Cultura cerca de ti» ocupa casi todo el ancho y dice qué es la aplicación; debajo, una frase explica qué se puede hacer y el buscador queda en la primera pantalla.</li>
+    <li><b>La tarjeta es un cartel.</b> Fotografía en la parte superior, que se funde con el color de la categoría; después la categoría, el día del mes en grande junto a la hora, el título, el lugar con la distancia y el precio. Todo el cartel es pulsable, pero el marcador para guardar queda aparte, arriba a la derecha, sobre un fondo semitransparente que lo mantiene visible sobre cualquier foto.</li>
+    <li><b>Destacado de la semana.</b> Un único cartel a todo el ancho, con fotografía de fondo y velo oscuro, rompe la retícula y da un punto de entrada para quien no sabe qué buscar.</li>
+    <li><b>Filtros en dos niveles y en forma de pregunta.</b> Las categorías están siempre visibles como botones bajo el buscador y se tiñen del color de su cartel al activarse. El resto se agrupa en «¿Qué?», «¿Cuándo?», «¿Dónde?» e «Y además», con atajos de fecha («Hoy», «Este fin de semana»).</li>
+    <li><b>Detalle orientado a la decisión.</b> La cabecera es el cartel con la fotografía, el título, la fecha y el lugar. Inmediatamente después aparecen «Reservar entradas» y «Guardar en mi lista», luego la ficha de datos y por último la descripción.</li>
+    <li><b>Lista personal como taco de entradas.</b> Cada fila lleva a la izquierda la fecha sobre el color de su categoría. Primero las reservas (compromisos adquiridos, con sus viajes de Metro) y después los guardados (pendientes de decidir).</li>
+    <li><b>Movimiento con función.</b> Los carteles entran escalonados, las cabeceras se descubren de arriba abajo como un telón y cada control responde al pulsarlo. Solo se animan la opacidad y la posición, y todo se desactiva con <code>prefers-reduced-motion</code>.</li>
+  </ul>
+
+  <h3>Viaje en Metro con billete QR</h3>
+  <p>El último obstáculo entre «quiero ir» y «estoy allí» es llegar. Por eso, al reservar se ofrece añadir un viaje en <b>Metro de Madrid</b> con billete QR, con una oferta de <b>1,50&nbsp;€ por persona para toda la red</b>. Las decisiones de diseño son estas:</p>
+  <ul>
+    <li><b>Opcional y sin marcar.</b> La casilla aparece desmarcada de partida: un complemento de pago no debe venir preseleccionado, para no inducir a error.</li>
+    <li><b>Precio transparente.</b> El total se recalcula al instante y se muestra el desglose («2 entradas: 50&nbsp;€ + 2 viajes de Metro: 3&nbsp;€»), de modo que el usuario ve qué paga y por qué. La cantidad de viajes sigue a la de entradas.</li>
+    <li><b>Visible antes de reservar.</b> La ficha del evento incluye una fila «Cómo llegar en Metro» con la oferta, para que quien compara eventos conozca el coste completo del plan.</li>
+    <li><b>El billete, a un toque.</b> Tras reservar aparece «Ver billete QR de Metro» en el detalle y «Ver QR» en la lista personal. El código se muestra sobre fondo blanco con margen, que es lo que necesita un lector, con un código de respaldo en texto y la recomendación de subir el brillo de la pantalla.</li>
+    <li><b>Aviso de prototipo.</b> El código es de ejemplo y no es válido en el Metro real; el propio billete lo indica. No se usan el logotipo ni los colores de la marca de Metro de Madrid, solo su nombre en el texto. La oferta de 1,50&nbsp;€ es una condición ficticia del prototipo.</li>
+    <li><b>Técnica.</b> El QR se genera en el navegador con la biblioteca de código abierto <i>qrcode-generator</i> (licencia MIT), que se entrega con el prototipo; no hay peticiones a ningún servicio externo.</li>
+  </ul>
+
+  <h2>4.5 Versión responsive</h2>
+  <p>La hoja de estilos se ha escrito <i>mobile-first</i>: los estilos base son los del móvil y cada punto de ruptura añade solo lo que cambia.</p>
+  <table>
+    <tr><th style="width:21%">Ancho</th><th>Navegación</th><th>Listado</th><th>Filtros</th><th>Detalle</th></tr>
+    <tr><td><b>Móvil</b><br>&lt; 600&nbsp;px</td><td>Barra inferior fija con icono y texto</td><td>1 columna de carteles; categorías con desplazamiento horizontal</td><td>Pantalla propia con botón de resultados fijo</td><td>1 columna: cartel, acciones, ficha y descripción</td></tr>
+    <tr><td><b>Tableta</b><br>600–959&nbsp;px</td><td>Desde 768&nbsp;px, en la cabecera</td><td>2 columnas; categorías en varias líneas</td><td>Pantalla propia</td><td>Desde 768&nbsp;px, 2 columnas</td></tr>
+    <tr><td><b>Escritorio</b><br>≥ 960&nbsp;px</td><td>En la cabecera</td><td>2 columnas, y 3 desde 1180&nbsp;px; el titular y el buscador comparten fila</td><td>Panel lateral permanente; el botón «Filtros» desaparece</td><td>Descripción a la izquierda; acciones y ficha en un lateral fijo al desplazar</td></tr>
+  </table>
+  <p>El contenido tiene un ancho máximo de 1240&nbsp;px para mantener líneas de lectura cómodas en monitores grandes. No se oculta ninguna función en ningún tamaño: solo cambia su colocación.</p>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <h1>5. Documentación del proceso</h1>
+
+  <h2>5.1 Metodología</h2>
+  <p>Se ha seguido un proceso <b>iterativo e incremental</b>, en ciclos cortos de «diseñar → construir → revisar → corregir», trabajando directamente sobre el prototipo en código en lugar de pasar por una herramienta de maquetas. Ha habido cuatro iteraciones:</p>
+  <ol>
+    <li><b>Definición.</b> Lectura del enunciado, lista de tareas del usuario y redacción de los dos perfiles (sección 1.2), y mapa de navegación con tres destinos principales.</li>
+    <li><b>Primera iteración (funcional).</b> Las cuatro pantallas en móvil con HTML semántico, estilo claro y tarjetas convencionales, y después los puntos de ruptura de tableta y escritorio. Sirvió para validar la estructura, el filtrado y la accesibilidad. Al valorar el resultado se concluyó que funcionaba pero era visualmente plana.</li>
+    <li><b>Segunda iteración (visual).</b> Estudio de dos webs de referencia (sección 4.1), concepto de cartelera, nueva paleta y tipografía como variables CSS, y cálculo del contraste de cada pareja de colores antes de usarla. La estructura apenas cambió: se rehízo la hoja de estilos y el marcado de las tarjetas.</li>
+    <li><b>Tercera iteración (fotografía y Metro).</b> Se añadieron fotografías a los carteles y la opción de viaje en Metro con billete QR en el flujo de reserva, con su casilla, su desglose, el billete y su presencia en la lista personal.</li>
+  </ol>
+  <p>Cada iteración terminó con una revisión en el navegador en móvil y escritorio, y los problemas detectados alimentaron la siguiente.</p>
+
+  <h2>5.2 Problemas encontrados y cómo se resolvieron</h2>
+  <table>
+    <tr><th style="width:38%">Problema</th><th>Solución adoptada</th></tr>
+    <tr><td>La primera versión era correcta pero «sosa»: tarjetas blancas iguales, sin personalidad.</td><td>Segunda iteración visual con un concepto propio (cada evento es un cartel), fondo oscuro, colores planos por categoría y tipografía de cartel.</td></tr>
+    <tr><td>Con el tema oscuro, las casillas y los botones de opción nativos apenas se distinguían del fondo (menos de 3:1).</td><td>Se dibujaron a medida con borde de 2&nbsp;px a 5,54:1 y relleno verde con marca al activarse, manteniendo los elementos <code>input</code> nativos para no perder el manejo por teclado.</td></tr>
+    <tr><td>El indicador de foco oscuro era invisible sobre el fondo negro, y uno claro lo era sobre el cartel de exposiciones.</td><td>Anillo de dos tonos (blanco con halo negro), que siempre contrasta con uno de los dos.</td></tr>
+    <tr><td>Al mover el prototipo a otra carpeta se olvidó copiar la carpeta de la tipografía: el titular volvía a verse en Arial y perdía el aspecto de cartel.</td><td>Se detectó comprobando en el navegador que la fuente aparecía como «error», se copió la carpeta <code>fuentes/</code> y se incluyó en el archivo comprimido de entrega.</td></tr>
+    <tr><td>Al añadir fotografías, el icono ampliado de la categoría se superponía a la imagen y, en el detalle, al título.</td><td>Con fotografía se oculta ese icono: la imagen ya identifica el evento.</td></tr>
+    <tr><td>El marcador de guardar podía perderse sobre fotografías claras u oscuras.</td><td>Fondo semitransparente oscuro con borde blanco; al activarse se rellena de blanco.</td></tr>
+    <tr><td>El texto sobre una fotografía no tiene un contraste predecible.</td><td>Velo oscuro bajo el texto en el destacado y la cabecera, y fundido al color de la categoría en las tarjetas. Falta medirlo numéricamente (sección 5.3).</td></tr>
+    <tr><td>Un código QR se puede generar en el servidor o con un servicio externo, pero eso obligaría a enviar datos fuera y a depender de la red.</td><td>Se usa una biblioteca pequeña de código abierto que genera el QR en el navegador y se entrega junto al prototipo.</td></tr>
+    <tr><td>Un complemento de pago preseleccionado puede cobrarse sin que el usuario lo advierta.</td><td>La casilla del viaje en Metro empieza desmarcada y el desglose del total se actualiza al marcarla.</td></tr>
+    <tr><td>Al quitar un evento de la lista, el botón pulsado desaparecía y el foco del teclado se perdía.</td><td>El foco se mueve al encabezado de la sección afectada y un mensaje de estado confirma lo ocurrido.</td></tr>
+    <tr><td>Las animaciones de entrada podían molestar a personas sensibles al movimiento.</td><td>Solo se animan opacidad y posición, y con <code>prefers-reduced-motion</code> se desactivan por completo.</td></tr>
+  </table>
+
+  <h2>5.3 Limitaciones de la verificación</h2>
+  <p>El prototipo se ha revisado calculando los contrastes de color, usando elementos HTML nativos con sus nombres y estados, y comprobando visualmente las pantallas en tres anchos y el flujo de reserva con Metro de principio a fin (total, confirmación, billete y lista). Quedan pendientes y se reconocen como limitación:</p>
+  <ul>
+    <li>La pasada con herramientas automáticas de accesibilidad (WAVE y axe) y con un lector de pantalla real (NVDA o VoiceOver).</li>
+    <li>La medición numérica del contraste del texto sobre las fotografías.</li>
+    <li>Las pruebas con usuarios reales.</li>
+    <li>El origen y la licencia de las fotografías, que deben documentarse en la sección 5.5.</li>
+  </ul>
+
+  <h2>5.4 Reflexión final</h2>
+  <p><b>Aprendizajes.</b> La accesibilidad resulta mucho más barata cuando se decide al principio: calcular el contraste antes de elegir la paleta y usar elementos nativos evita casi todo el trabajo de corrección. Prototipar en código saca a la luz problemas que una maqueta esconde, como la pérdida del foco, un recurso que no se copia o un icono que se superpone a una foto. Separar estructura y presentación permitió cambiar por completo el aspecto sin rehacer la lógica. Y una función pequeña bien integrada, como el viaje en Metro, mejora el flujo más que muchas pantallas nuevas.</p>
+  <p><b>Posibles mejoras.</b></p>
+  <ul>
+    <li>Pasar WAVE y axe, y probar con lector de pantalla y con personas de los dos perfiles definidos.</li>
+    <li>Medir el contraste sobre fotografías y ofrecer, si hace falta, un velo más intenso.</li>
+    <li>Añadir una vista de mapa y usar la geolocalización real del dispositivo; con el mapa, sugerir la estación de Metro más cercana al recinto.</li>
+    <li>Conectar con una fuente real de eventos y con un servicio real de billetes, y añadir estados de carga y de error de red.</li>
+    <li>Completar la reserva con pago, recordatorios en el calendario y caducidad del billete de Metro.</li>
+    <li>Ofrecer un tema claro mediante <code>prefers-color-scheme</code>, recalculando los contrastes.</li>
+  </ul>
+
+  <h2>5.5 Créditos de las fotografías</h2>
+  <p>Las fotografías de los carteles deben proceder de fuentes con licencia que permita su uso, y cada una debe acreditarse. Esta tabla debe completarse antes de entregar el trabajo con el autor, la licencia y el enlace de cada imagen. Los huecos están marcados en amarillo.</p>
+  <table>
+    <tr><th style="width:5%">N.º</th><th style="width:31%">Evento (archivo)</th><th>Autor y fuente</th><th style="width:20%">Licencia</th></tr>
+    <tr><td>1</td><td>Noches de jazz en la azotea (<code>e1.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>2</td><td>La casa de Bernarda Alba (<code>e2.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>3</td><td>Luz y territorio (<code>e3.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>4</td><td>Cine mudo con piano en directo (<code>e4.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>5</td><td>Flamenco joven (<code>e5.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>6</td><td>Club de lectura (<code>e6.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>7</td><td>Vivaldi a la luz de las velas (<code>e7.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>8</td><td>Microteatro (<code>e8.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>9</td><td>Cerámica viva (<code>e9.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>10</td><td>Poesía en el parque (<code>e10.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>11</td><td>Cuerpos en tránsito (<code>e11.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+    <tr><td>12</td><td>Indie al aire libre (<code>e12.jpg</code>)</td><td><span class="rellenar">[autor · fuente · enlace]</span></td><td><span class="rellenar">[licencia]</span></td></tr>
+  </table>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <h1>6. Conclusiones y autoevaluación</h1>
+  <p>El resultado es un prototipo navegable que cubre los cuatro objetivos del enunciado —consultar, filtrar, guardar y reservar— en las cuatro pantallas clave exigidas más un diálogo de reserva, y que se adapta a móvil, tableta y escritorio. Tras una segunda iteración visual tiene además una identidad propia, la de una cartelera con fotografía, y una mejora propia: el viaje en Metro con billete QR. Las decisiones de tipografía, color y disposición están ligadas a los perfiles de usuario y a criterios WCAG 2.1 concretos, con el contraste comprobado numéricamente.</p>
+
+  <table>
+    <caption>Autoevaluación frente a los requisitos del enunciado</caption>
+    <tr><th style="width:36%">Requisito</th><th style="width:16%">Estado</th><th>Dónde se recoge</th></tr>
+    <tr><td>Descripción inicial: objetivo, público y dispositivos</td><td>Cumplido</td><td>Sección 1</td></tr>
+    <tr><td>Principios de usabilidad</td><td>Cumplido</td><td>Sección 2.1</td></tr>
+    <tr><td>Criterios básicos de accesibilidad WCAG</td><td>Cumplido, con verificación parcial</td><td>Secciones 2.2 y 4.3. Falta la comprobación con WAVE, axe y lector de pantalla, y el contraste sobre fotografías (5.3)</td></tr>
+    <tr><td>Prototipo de al menos 4 pantallas clave</td><td>Cumplido</td><td>Sección 3: inicio, filtros, detalle y lista personal, más el diálogo de reserva</td></tr>
+    <tr><td>Consultar, filtrar por categoría, fecha y ubicación, y guardar en lista personal</td><td>Cumplido</td><td>Funcional en el prototipo</td></tr>
+    <tr><td>Inscripción o reserva de entradas (opcional)</td><td>Cumplido</td><td>Diálogo de reserva; sin pago real</td></tr>
+    <tr><td>Mejora propia: viaje en Metro con billete QR</td><td>Cumplido</td><td>Sección 4.4 y figura 2. Código de ejemplo, no válido en el Metro real</td></tr>
+    <tr><td>Créditos y licencias de las fotografías</td><td>Pendiente</td><td>Sección 5.5, por completar</td></tr>
+    <tr><td>Justificación tipográfica, cromática y de disposición</td><td>Cumplido</td><td>Secciones 4.1 a 4.4</td></tr>
+    <tr><td>Versión responsive</td><td>Cumplido</td><td>Sección 4.5 y figuras 3 y 4</td></tr>
+    <tr><td>Metodología, problemas y reflexión</td><td>Cumplido</td><td>Sección 5</td></tr>
+    <tr><td>Código HTML/CSS/JS (opcional)</td><td>Cumplido</td><td>Carpeta del prototipo y anexo A</td></tr>
+  </table>
+
+  <p><b>Puntos fuertes.</b> Prototipo real y no simulado; accesibilidad integrada desde la estructura; identidad visual propia basada en un concepto (la cartelera); contraste muy por encima del mínimo; ninguna función se pierde al cambiar de dispositivo.</p>
+  <p><b>Puntos débiles.</b> No ha habido pruebas con usuarios ni con productos de apoyo; los datos son ficticios; el listado no ofrece vista de mapa ni ordenación, la ubicación del usuario está fijada en el prototipo y las licencias de las fotografías están por documentar.</p>
+</section>
+
+<!-- ============ ANEXO A ============ -->
+<section>
+  <h1>Anexo A. Código del prototipo funcional</h1>
+  <p>El código completo se entrega en la carpeta del prototipo. No necesita servidor ni conexión.</p>
+  <table>
+    <tr><th style="width:24%">Archivo</th><th>Contenido</th></tr>
+    <tr><td><code>index.html</code></td><td>Estructura fija de la página: enlace de salto, cabecera con la navegación, región <code>main</code>, zona de avisos y elemento <code>dialog</code>.</td></tr>
+    <tr><td><code>estilos.css</code></td><td>Variables de diseño, estilos base para móvil, animaciones y puntos de ruptura a 600, 768, 960 y 1180&nbsp;px. Preferencias de movimiento reducido y contraste forzado.</td></tr>
+    <tr><td><code>fuentes/</code></td><td>Tipografía Anton en formato WOFF2 y su licencia (SIL Open Font License).</td></tr>
+    <tr><td><code>img/</code></td><td>Doce fotografías de los eventos en formato JPEG, de 960 × 600&nbsp;px.</td></tr>
+    <tr><td><code>libs/</code></td><td>Biblioteca <i>qrcode-generator</i> (licencia MIT) para generar el código QR del billete de Metro, y su licencia.</td></tr>
+    <tr><td><code>app.js</code></td><td>Datos de ejemplo, filtrado, las cuatro vistas, enrutado por <i>hash</i>, gestión del foco y guardado de la lista y las reservas en <code>localStorage</code>, oferta de Metro y billete QR.</td></tr>
+  </table>
+
+  <h3>Variables de diseño (<code>estilos.css</code>)</h3>
+<pre>:root {
+  color-scheme: dark;
+  --fondo: #0C0F0E;        --superficie: #171C1A;
+  --tinta: #F4F1EA;        --tinta-suave: #B9BDB5;
+  --acento: #35E0A1;       --acento-tinta: #06140E;
+  --borde-control: #8D948C;
+  --musica: #F2C230; --teatro: #C8102E; --expo: #EDE7DA;
+  --cine: #2247E6;   --danza: #FF7A3D;  --letras: #35E0A1;
+  --cartel: "Anton", "Arial Narrow", Impact, sans-serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.cat-teatro { --p: var(--teatro); --pi: #FFFFFF; }   /* color y tinta del cartel */
+.tarjeta    { background: var(--p); color: var(--pi); }</pre>
+
+  <h3>Foco visible y navegación adaptable (<code>estilos.css</code>)</h3>
+<pre>:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px;
+                 box-shadow: 0 0 0 6px #0C0F0E; }      /* anillo de dos tonos */
+
+.nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; }   /* móvil */
+@media (min-width: 768px) { .nav { position: static; } }                  /* cabecera */
+@media (min-width: 960px) {
+  .disposicion { display: grid; grid-template-columns: 290px 1fr; gap: 2.5rem; }
+  .lateral { display: block; }            /* filtros siempre visibles */
+}</pre>
+
+  <h3>Botón de guardar con estado accesible (<code>app.js</code>)</h3>
+<pre>&lt;button type="button" class="guardar-icono" data-accion="guardar" data-id="7"
+        aria-pressed="true"
+        aria-label="Guardar «Vivaldi a la luz de las velas» en mi lista"&gt;
+  &lt;svg aria-hidden="true" focusable="false"&gt;…&lt;/svg&gt;
+&lt;/button&gt;</pre>
+
+  <h3>Gestión del foco al cambiar de pantalla (<code>app.js</code>)</h3>
+<pre>document.title = titulo + ' · Telón';
+if (!primeraCarga) {
+  window.scrollTo(0, 0);
+  var h1 = $('h1', principal);
+  if (h1) h1.focus({ preventScroll: true });   // el lector anuncia la nueva pantalla
+}</pre>
+
+  <h3>Mensajes de estado (<code>index.html</code> y <code>app.js</code>)</h3>
+<pre>&lt;div id="aviso" class="toast" role="status" aria-live="polite"&gt;&lt;/div&gt;
+
+avisar('Guardado en tu lista: ' + evento.t);</pre>
+
+  <h3>Total de la reserva con viaje en Metro (<code>app.js</code>)</h3>
+<pre>var METRO = 1.5;   // oferta de prototipo: € por persona, toda la red
+
+function pintar() {
+  var ent = gratis ? 0 : n() * e.precio;          // entradas
+  var mt  = metro.checked ? n() * METRO : 0;      // viajes de Metro
+  total.textContent = (ent + mt) === 0 ? 'Gratis' : eur(ent + mt);
+  desglose.textContent = metro.checked
+    ? plural(n(), 'entrada', 'entradas') + ': ' + eur(ent) + ' + ' +
+      plural(n(), 'viaje de Metro', 'viajes de Metro') + ': ' + eur(mt) : '';
+}</pre>
+
+  <h3>Billete QR accesible (<code>app.js</code>)</h3>
+<pre>var qr = qrcode(0, 'M');
+qr.addData('TELON|PROTOTIPO|METRO|' + codigo + '|' + r.n + 'P');
+qr.make();
+svg = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+// &lt;div class="qr-caja" role="img"
+//      aria-label="Código QR del billete de Metro para 2 personas. Código de respaldo: MT-25296"&gt;</pre>
+
+  <h1 style="break-before:auto;margin-top:22pt">Anexo B. Referencias</h1>
+  <ul>
+    <li>W3C. <i>Web Content Accessibility Guidelines (WCAG) 2.1</i>. https://www.w3.org/TR/WCAG21/</li>
+    <li>WebAIM. <i>WAVE Web Accessibility Evaluation Tool</i>. https://wave.webaim.org/</li>
+    <li>Deque Systems. <i>axe: The Accessibility Engine</i>. https://www.deque.com/axe/</li>
+    <li>The Anton Project Authors. <i>Anton</i>, tipografía con licencia SIL Open Font License 1.1.</li>
+    <li>Kazuhiko Arase. <i>qrcode-generator</i>, biblioteca con licencia MIT. «QR Code» es marca registrada de DENSO WAVE INCORPORATED.</li>
+    <li>Referencias visuales consultadas: wickedelmusical.com y la agenda «Actividades y eventos» de madrid.es.</li>
+  </ul>
+</section>
+
+</body>
+</html>
