@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi TV · Vídeo de YouTube con controles</title>
+  <style>
+    :root {
+      --madera: #5b3a1e;
+      --madera-clara: #7a4e2a;
+      --carcasa: #1f2937;
+      --carcasa-borde: #374151;
+      --pantalla-fondo: #000000;
+      --texto: #f8fafc;
+      --texto-suave: #94a3b8;
+      --boton: #2563eb;
+      --boton-hover: #1d4ed8;
+      --foco: #f59e0b;
+      --radio: 0.75rem;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #334155 0%, #0f172a 70%);
+      color: var(--texto);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--foco);
+      outline-offset: 3px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      margin: 0 0 0.25rem;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--texto-suave);
+      font-size: 0.95rem;
+    }
+
+    /* ---------- TELEVISIÓN (HTML + CSS) ---------- */
+    .tv {
+      width: 100%;
+      max-width: 48rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .marco {
+      width: 100%;
+      background: linear-gradient(160deg, var(--carcasa-borde), var(--carcasa) 60%);
+      border-radius: 1.25rem;
+      padding: clamp(0.5rem, 2vw, 1.25rem);
+      box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+    }
+
+    .pantalla {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--pantalla-fondo);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      border: 0.4rem solid #0b0f19;
+    }
+
+    .pantalla #reproductor,
+    .pantalla iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .mensaje-carga {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--texto-suave);
+      font-size: 0.95rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .base {
+      width: 40%;
+      height: 0.6rem;
+      background: var(--madera-clara);
+      border-radius: 0 0 0.5rem 0.5rem;
+      margin-top: -0.1rem;
+    }
+
+    .patas {
+      display: flex;
+      justify-content: space-between;
+      width: 55%;
+    }
+
+    .pata {
+      width: 1.2rem;
+      height: 1.5rem;
+      background: var(--madera);
+      border-radius: 0 0 0.4rem 0.4rem;
+    }
+
+    /* ---------- CONTROLES PERSONALIZADOS ---------- */
+    .controles {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .controles button {
+      min-height: 2.75rem;
+      min-width: 6.5rem;
+      padding: 0.5rem 1rem;
+      font: inherit;
+      font-weight: 600;
+      color: #ffffff;
+      background: var(--boton);
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .controles button:hover:not(:disabled) { background: var(--boton-hover); }
+    .controles button:active:not(:disabled) { transform: scale(0.97); }
+    .controles button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .controles button[aria-pressed="true"] {
+      background: #b91c1c;
+    }
+
+    .estado {
+      text-align: center;
+      margin-top: 0.75rem;
+      min-height: 1.4em;
+      color: var(--texto-suave);
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 40rem) {
+      .controles button { min-width: 7.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mi TV 📺</h1>
+    <p>Vídeo de YouTube con controles personalizados</p>
+  </header>
+
+  <main class="tv">
+
+    <div class="marco">
+      <div class="pantalla">
+        <!-- El reproductor de YouTube se inserta aquí mediante la API de iframe -->
+        <div id="reproductor"></div>
+        <p class="mensaje-carga" id="mensaje-carga">Cargando el vídeo…</p>
+      </div>
+    </div>
+
+    <div class="base" aria-hidden="true"></div>
+    <div class="patas" aria-hidden="true">
+      <span class="pata"></span>
+      <span class="pata"></span>
+    </div>
+
+    <div class="controles" role="group" aria-label="Controles del vídeo">
+      <button type="button" id="btn-play" disabled>▶ Play</button>
+      <button type="button" id="btn-pausa" disabled>⏸ Pausa</button>
+      <button type="button" id="btn-mute" disabled aria-pressed="false">🔇 Mute</button>
+      <button type="button" id="btn-stop" disabled>⏹ Stop</button>
+    </div>
+
+    <p class="estado" id="estado" aria-live="polite"></p>
+
+  </main>
+
+  <script>
+    // Cambia este ID por el de tu propio vídeo de YouTube
+    // (la parte de la URL después de "v=", por ejemplo: https://www.youtube.com/watch?v=ID)
+    const VIDEO_ID = 'M7lc1UVf-VE';
+
+    const botones = {
+      play: document.getElementById('btn-play'),
+      pausa: document.getElementById('btn-pausa'),
+      mute: document.getElementById('btn-mute'),
+      stop: document.getElementById('btn-stop')
+    };
+    const estado = document.getElementById('estado');
+    const mensajeCarga = document.getElementById('mensaje-carga');
+
+    let reproductor = null;
+
+    // Esta función la llama automáticamente la API de YouTube cuando está lista
+    function onYouTubeIframeAPIReady() {
+      reproductor = new YT.Player('reproductor', {
+        videoId: VIDEO_ID,
+        width: '100%',
+        height: '100%',
+        playerVars: {
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          onReady: alEstarListo,
+          onError: alFallar
+        }
+      });
+    }
+
+    function alEstarListo() {
+      mensajeCarga.hidden = true;
+      Object.values(botones).forEach(b => b.disabled = false);
+      estado.textContent = 'Listo para reproducir.';
+    }
+
+    function alFallar() {
+      mensajeCarga.textContent = 'No se ha podido cargar el vídeo. Revisa el ID de YouTube.';
+      mensajeCarga.hidden = false;
+      estado.textContent = 'Error al cargar el vídeo.';
+    }
+
+    // Conexión de cada botón con la API de YouTube
+    botones.play.addEventListener('click', () => {
+      reproductor.playVideo();
+      estado.textContent = 'Reproduciendo.';
+    });
+
+    botones.pausa.addEventListener('click', () => {
+      reproductor.pauseVideo();
+      estado.textContent = 'Pausado.';
+    });
+
+    botones.mute.addEventListener('click', () => {
+      const silenciado = reproductor.isMuted();
+      if (silenciado) {
+        reproductor.unMute();
+      } else {
+        reproductor.mute();
+      }
+      const ahoraSilenciado = !silenciado;
+      botones.mute.setAttribute('aria-pressed', String(ahoraSilenciado));
+      botones.mute.textContent = ahoraSilenciado ? '🔊 Unmute' : '🔇 Mute';
+      estado.textContent = ahoraSilenciado ? 'Sonido desactivado.' : 'Sonido activado.';
+    });
+
+    botones.stop.addEventListener('click', () => {
+      reproductor.stopVideo();
+      estado.textContent = 'Detenido.';
+    });
+  </script>
+
+  <!-- Carga de la API de YouTube para iframes -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+</body>
+</html>
